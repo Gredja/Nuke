@@ -76,10 +76,8 @@
           "items": {
             "type": "string",
             "enum": [
-              "Clean",
-              "Compile",
-              "Restore",
-              "Test"
+              "Release",
+              "Restore"
             ]
           }
         },
@@ -93,10 +91,8 @@
           "items": {
             "type": "string",
             "enum": [
-              "Clean",
-              "Compile",
-              "Restore",
-              "Test"
+              "Release",
+              "Restore"
             ]
           }
         },

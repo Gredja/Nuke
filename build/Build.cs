@@ -58,8 +58,7 @@ class Build : NukeBuild
             Log.Information($"Git: {Git}");
             Log.Information($"ReleaseVersion: {ReleaseVersion}");
 
-            var releaseStrategy = StrategyFactory.Create(Repository, Git);
-            releaseStrategy.Execute(Solution, ReleaseVersion);
+            StrategyFactory.Create(Repository, Git).Execute(Solution, ReleaseVersion);
         });
 
     Target Compile => _ => _
@@ -70,7 +69,4 @@ class Build : NukeBuild
 
             DotNetPublish(x => x.SetProject(Solution).SetConfiguration(Configuration));
         });
-
-
-
 }

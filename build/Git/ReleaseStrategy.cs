@@ -57,10 +57,10 @@ public class ReleaseStrategy : Strategy, IStrategy
             }
         }
 
-        var tt = "OK2";
+        var commitMessage = $"Release {releaseVersion}";
 
         Git("add -A ");
-        Git($"commit -m '{tt}'");
+        Git($"commit -m '{commitMessage}'");
         Git($"push --set-upstream origin {branchName}");
     }
 }

@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Policy;
+using System.Xml;
+using System.Xml.Linq;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
@@ -28,16 +31,16 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
-    [Parameter("ReleaseVersion")] 
+    [Parameter("ReleaseVersion")]
     readonly string ReleaseVersion;
 
-    public static int Main () => Execute<Build>(x => x.Test);
-
-
+    public static int Main() => Execute<Build>(x => x.Test);
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository Repository;
     [PathVariableAttribute] readonly Tool Git;
+
+    readonly string[] projectToModify = { "ConsoleApp1", "ClassLibrary1" };
 
 
     Target Clean => _ => _
@@ -65,15 +68,44 @@ class Build : NukeBuild
             Log.Information($"ReleaseVersion: {ReleaseVersion}");
 
 
-            Log.Information($"Create branch release/{ReleaseVersion} and checkout");
+            foreach (Project project in Solution.Projects.Where(x => projectToModify.Contains(x.Name)))
+            {
+                Log.Information($"project.Name: {project.Name}");
+                Log.Information($"project.Path: {project.Path}");
 
-            var branchName = $"release/{ReleaseVersion}";
-            Git($"branch {branchName}");
-            Git($"checkout -f {branchName}");
+                XmlDocument doc = new XmlDocument();
+                doc.Load($"{project.Path}");
+
+                if (doc.DocumentElement != null)
+                {
+                    XmlNode element = doc.GetElementsByTagName("AssemblyVersion").Item(0);
+
+
+                    Log.Information($"elem.Name: {element.Name}");
+                    Log.Information($"elem.InnerText: {element.InnerText}");
+
+                    element.InnerText = $"{ReleaseVersion}.0";
+
+                    doc.Save($"{project.Path}");
+
+                }
+
+
+
+
+            }
+
+
+
+            //Log.Information($"Create branch release/{ReleaseVersion} and checkout");
+
+            //var branchName = $"release/{ReleaseVersion}";
+            //Git($"branch {branchName}");
+            //Git($"checkout -f {branchName}");
         });
 
     Target Compile => _ => _
-        
+
         .Executes(() =>
         {
             Log.Information("Hello world - Compile");

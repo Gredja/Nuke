@@ -32,7 +32,7 @@ public class ReleaseStrategy : Strategy, IStrategy
         Git($"branch {branchName}");
         Git($"checkout -f {branchName}");
 
-        foreach (Project project in solution.Projects.Where(x => projectToModify.Contains(x.Name)))
+        foreach (var project in solution.Projects.Where(x => projectToModify.Contains(x.Name)))
         {
             Log.Information($"project.Name: {project.Name}");
             Log.Information($"project.Path: {project.Path}");
@@ -57,8 +57,10 @@ public class ReleaseStrategy : Strategy, IStrategy
             }
         }
 
+        var tt = "OK2";
+
         Git("add -A ");
-        Git("commit -m 'Ok'");
+        Git($"commit -m '{tt}'");
         Git($"push --set-upstream origin {branchName}");
     }
 }

@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
@@ -29,6 +31,8 @@ class Build : NukeBuild
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository Repository;
+    [PathVariableAttribute] readonly Tool Git;
+
 
     Target Clean => _ => _
         .Before(Restore)
@@ -43,10 +47,12 @@ class Build : NukeBuild
             Log.Information($"Hello world - Restore {Solution}");
             Log.Information($"Rep: {Repository}");
             Log.Information($"Branch: {Repository.Branch}");
+            Log.Information($"Git: {Git}");
 
-            Repository.SetBranch("release");
 
             DotNetRestore(x => x.SetProjectFile(Solution));
+
+            Git("branch release");
         });
 
     Target Compile => _ => _

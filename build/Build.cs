@@ -98,12 +98,8 @@ class Build : NukeBuild
             }
 
             Git("add -A ");
-            Git("commit \"OK\"");
+            Git("commit");
             Git("push");
-
-
-
-
         });
 
     Target Compile => _ => _

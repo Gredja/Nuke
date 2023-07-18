@@ -25,9 +25,15 @@ class Build : NukeBuild
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
 
-    public static int Main () => Execute<Build>(x => x.Compile);
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+
+    [Parameter("ReleaseVersion")] 
+    readonly string ReleaseVersion;
+
+    public static int Main () => Execute<Build>(x => x.Test);
+
+
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository Repository;
@@ -44,24 +50,37 @@ class Build : NukeBuild
     Target Restore => _ => _
         .Executes(() =>
         {
-            Log.Information($"Hello world - Restore {Solution}");
+            DotNetRestore(x => x.SetProjectFile(Solution));
+        });
+
+    Target Test => _ => _
+        .DependsOn(Restore)
+        .Executes(() =>
+        {
+            Log.Information($"Hello world - Test");
+            Log.Information($"Solution: {Solution}");
             Log.Information($"Rep: {Repository}");
             Log.Information($"Branch: {Repository.Branch}");
             Log.Information($"Git: {Git}");
+            Log.Information($"ReleaseVersion: {ReleaseVersion}");
 
 
-            DotNetRestore(x => x.SetProjectFile(Solution));
+            Log.Information($"Create branch release/{ReleaseVersion} and checkout");
 
-            Git("branch release");
+            var branchName = $"release/{ReleaseVersion}";
+            Git($"branch {branchName}");
+            Git($"checkout -b {branchName}");
         });
 
     Target Compile => _ => _
-        .DependsOn(Restore)
+        
         .Executes(() =>
         {
             Log.Information("Hello world - Compile");
 
             DotNetPublish(x => x.SetProject(Solution).SetConfiguration(Configuration));
         });
+
+
 
 }

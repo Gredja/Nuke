@@ -62,6 +62,10 @@
             "type": "string"
           }
         },
+        "ReleaseVersion": {
+          "type": "string",
+          "description": "ReleaseVersion"
+        },
         "Root": {
           "type": "string",
           "description": "Root directory during build execution"
@@ -74,7 +78,8 @@
             "enum": [
               "Clean",
               "Compile",
-              "Restore"
+              "Restore",
+              "Test"
             ]
           }
         },
@@ -90,7 +95,8 @@
             "enum": [
               "Clean",
               "Compile",
-              "Restore"
+              "Restore",
+              "Test"
             ]
           }
         },

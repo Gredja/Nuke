@@ -1,7 +1,6 @@
 ﻿using EnsureThat;
 using Nuke.Common.Git;
 using Nuke.Common.Tooling;
-using Serilog;
 using System.Text.RegularExpressions;
 
 namespace Git;
@@ -12,12 +11,10 @@ public abstract class Strategy
 
     protected readonly GitRepository Repository;
     protected readonly Tool Git;
-    protected readonly ILogger Logger;
 
-    protected Strategy(GitRepository repository, Tool git, ILogger logger)
+    protected Strategy(GitRepository repository, Tool git)
     {
         Repository = Ensure.Any.IsNotNull(repository, nameof(repository));
         Git = Ensure.Any.IsNotNull(git, nameof(git));
-        Logger = Ensure.Any.IsNotNull(logger, nameof(logger));
     }
 }

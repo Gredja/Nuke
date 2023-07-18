@@ -28,8 +28,6 @@ class Build : NukeBuild
     [Parameter("ReleaseVersion")]
     readonly string ReleaseVersion;
 
-    readonly ILogger Log = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-
     public static int Main() => Execute<Build>(x => x.Release);
 
     [Solution] readonly Solution Solution;
@@ -47,8 +45,6 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetRestore(x => x.SetProjectFile(Solution));
-
-            Git($"checkout -f develop");
         });
 
     Target Release => _ => _
@@ -62,10 +58,8 @@ class Build : NukeBuild
             Log.Information($"Git: {Git}");
             Log.Information($"ReleaseVersion: {ReleaseVersion}");
 
-            var releaseStrategy = StrategyFactory.Create(Repository, Git, Log);
+            var releaseStrategy = StrategyFactory.Create(Repository, Git);
             releaseStrategy.Execute(Solution, ReleaseVersion);
-
-
         });
 
     Target Compile => _ => _

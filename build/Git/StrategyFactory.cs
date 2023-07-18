@@ -6,8 +6,8 @@ namespace Git;
 
 static class StrategyFactory
 {
-    public static IStrategy Create(GitRepository repository, Tool git, ILogger logger)
+    public static IStrategy Create(GitRepository repository, Tool git)
     {
-        return new ReleaseStrategy(repository, git, logger);
+        return new ReleaseStrategy(repository, git);
     }
 }

@@ -10,7 +10,7 @@ namespace Git;
 
 public class ReleaseStrategy : Strategy, IStrategy
 {
-    public ReleaseStrategy(GitRepository repository, Tool git, ILogger logger) : base(repository, git, logger)
+    public ReleaseStrategy(GitRepository repository, Tool git) : base(repository, git)
     {
     }
 

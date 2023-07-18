@@ -71,7 +71,6 @@ class Build : NukeBuild
             var branchName = $"release/{ReleaseVersion}";
             Git($"branch {branchName}");
             Git($"checkout -f {branchName}");
-            Git("push");
 
             foreach (Project project in Solution.Projects.Where(x => projectToModify.Contains(x.Name)))
             {

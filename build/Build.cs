@@ -34,13 +34,6 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository Repository;
     [PathVariableAttribute] readonly Tool Git;
 
-    Target Clean => _ => _
-        .Before(Restore)
-        .Executes(() =>
-        {
-            Log.Information("Hello world - Clean");
-        });
-
     Target Restore => _ => _
         .Executes(() =>
         {
@@ -59,14 +52,5 @@ class Build : NukeBuild
             Log.Information($"ReleaseVersion: {ReleaseVersion}");
 
             StrategyFactory.Create(Repository, Git).Execute(Solution, ReleaseVersion);
-        });
-
-    Target Compile => _ => _
-
-        .Executes(() =>
-        {
-            Log.Information("Compile");
-
-            DotNetPublish(x => x.SetProject(Solution).SetConfiguration(Configuration));
         });
 }

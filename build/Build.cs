@@ -54,6 +54,8 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetRestore(x => x.SetProjectFile(Solution));
+
+            Git($"checkout -f develop");
         });
 
     Target Test => _ => _

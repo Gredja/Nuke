@@ -67,19 +67,22 @@ class Build : NukeBuild
             Log.Information($"Git: {Git}");
             Log.Information($"ReleaseVersion: {ReleaseVersion}");
 
+            Log.Information($"Create branch release/{ReleaseVersion} and checkout");
+            var branchName = $"release/{ReleaseVersion}";
+            Git($"branch {branchName}");
+            Git($"checkout -f {branchName}");
 
             foreach (Project project in Solution.Projects.Where(x => projectToModify.Contains(x.Name)))
             {
                 Log.Information($"project.Name: {project.Name}");
                 Log.Information($"project.Path: {project.Path}");
 
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load($"{project.Path}");
 
                 if (doc.DocumentElement != null)
                 {
-                    XmlNode element = doc.GetElementsByTagName("AssemblyVersion").Item(0);
-
+                    var element = doc.GetElementsByTagName("AssemblyVersion").Item(0);
 
                     Log.Information($"elem.Name: {element.Name}");
                     Log.Information($"elem.InnerText: {element.InnerText}");
@@ -87,21 +90,18 @@ class Build : NukeBuild
                     element.InnerText = $"{ReleaseVersion}.0";
 
                     doc.Save($"{project.Path}");
-
                 }
 
-
-
-
+                Log.Error("Can not load proj file!");
             }
 
+            Git("add -A ");
+            Git("commit 'OK'");
+            Git("push");
 
 
-            //Log.Information($"Create branch release/{ReleaseVersion} and checkout");
 
-            //var branchName = $"release/{ReleaseVersion}";
-            //Git($"branch {branchName}");
-            //Git($"checkout -f {branchName}");
+
         });
 
     Target Compile => _ => _

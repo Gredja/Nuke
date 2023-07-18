@@ -71,6 +71,7 @@ class Build : NukeBuild
             var branchName = $"release/{ReleaseVersion}";
             Git($"branch {branchName}");
             Git($"checkout -f {branchName}");
+            Git("push");
 
             foreach (Project project in Solution.Projects.Where(x => projectToModify.Contains(x.Name)))
             {
@@ -98,8 +99,8 @@ class Build : NukeBuild
             }
 
             Git("add -A ");
-            Git("commit");
-            Git("push");
+            Git("commit -m 'Ok'");
+           // Git("push");
         });
 
     Target Compile => _ => _

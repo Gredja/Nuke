@@ -1,0 +1,4 @@
+{
+  "$schema": "./build.schema.json",
+  "Solution": "ConsoleApp1/ConsoleApp1.sln"
+}

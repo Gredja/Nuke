@@ -29,8 +29,9 @@ public class ReleaseStrategy : Strategy, IStrategy
 
         var branchName = $"release/{releaseVersion}";
 
+        Git($"checkout develop");
         Git($"branch {branchName}");
-        Git($"checkout -f {branchName}");
+        Git($"checkout {branchName}");
 
         foreach (var project in solution.Projects.Where(x => projectToModify.Contains(x.Name)))
         {
@@ -62,5 +63,6 @@ public class ReleaseStrategy : Strategy, IStrategy
         Git("add -A ");
         Git($"commit -m '{commitMessage}'");
         Git($"push --set-upstream origin {branchName}");
+        Git($"checkout develop");
     }
 }

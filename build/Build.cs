@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Policy;
-using System.Xml;
-using System.Xml.Linq;
+using Git;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
@@ -34,14 +28,13 @@ class Build : NukeBuild
     [Parameter("ReleaseVersion")]
     readonly string ReleaseVersion;
 
-    public static int Main() => Execute<Build>(x => x.Test);
+    readonly ILogger Log = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+
+    public static int Main() => Execute<Build>(x => x.Release);
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository Repository;
     [PathVariableAttribute] readonly Tool Git;
-
-    readonly string[] projectToModify = { "ConsoleApp1", "ClassLibrary1" };
-
 
     Target Clean => _ => _
         .Before(Restore)
@@ -58,57 +51,28 @@ class Build : NukeBuild
             Git($"checkout -f develop");
         });
 
-    Target Test => _ => _
+    Target Release => _ => _
         .DependsOn(Restore)
         .Executes(() =>
         {
-            Log.Information($"Hello world - Test");
+            Log.Information("Test");
             Log.Information($"Solution: {Solution}");
             Log.Information($"Rep: {Repository}");
             Log.Information($"Branch: {Repository.Branch}");
             Log.Information($"Git: {Git}");
             Log.Information($"ReleaseVersion: {ReleaseVersion}");
 
-            Log.Information($"Create branch release/{ReleaseVersion} and checkout");
-            var branchName = $"release/{ReleaseVersion}";
-            Git($"branch {branchName}");
-            Git($"checkout -f {branchName}");
+            var releaseStrategy = StrategyFactory.Create(Repository, Git, Log);
+            releaseStrategy.Execute(Solution, ReleaseVersion);
 
-            foreach (Project project in Solution.Projects.Where(x => projectToModify.Contains(x.Name)))
-            {
-                Log.Information($"project.Name: {project.Name}");
-                Log.Information($"project.Path: {project.Path}");
 
-                var doc = new XmlDocument();
-                doc.Load($"{project.Path}");
-
-                if (doc.DocumentElement != null)
-                {
-                    var element = doc.GetElementsByTagName("AssemblyVersion").Item(0);
-
-                    Log.Information($"elem.Name: {element.Name}");
-                    Log.Information($"elem.InnerText: {element.InnerText}");
-
-                    element.InnerText = $"{ReleaseVersion}.0";
-
-                    doc.Save($"{project.Path}");
-                }
-                else
-                {
-                    Log.Error("Can not load proj file!");
-                }
-            }
-
-            Git("add -A ");
-            Git("commit -m 'Ok'");
-            Git($"push --set-upstream origin {branchName}");
         });
 
     Target Compile => _ => _
 
         .Executes(() =>
         {
-            Log.Information("Hello world - Compile");
+            Log.Information("Compile");
 
             DotNetPublish(x => x.SetProject(Solution).SetConfiguration(Configuration));
         });

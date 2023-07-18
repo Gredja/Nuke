@@ -95,8 +95,6 @@ class Build : NukeBuild
                 {
                     Log.Error("Can not load proj file!");
                 }
-
-            
             }
 
             Git("add -A ");

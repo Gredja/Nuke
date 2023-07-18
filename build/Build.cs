@@ -69,7 +69,7 @@ class Build : NukeBuild
 
             var branchName = $"release/{ReleaseVersion}";
             Git($"branch {branchName}");
-            Git($"checkout {branchName}");
+            Git($"checkout -f {branchName}");
         });
 
     Target Compile => _ => _

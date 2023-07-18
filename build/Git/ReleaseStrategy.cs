@@ -5,6 +5,7 @@ using Nuke.Common.Tooling;
 using Serilog;
 using System.Xml;
 using System.Data;
+using System.IO;
 
 namespace Git;
 
@@ -54,7 +55,7 @@ public class ReleaseStrategy : Strategy, IStrategy
             }
             else
             {
-                Log.Error("Can not load proj file!");
+                throw new FileLoadException("Can not load proj file");
             }
         }
 

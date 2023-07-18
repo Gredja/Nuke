@@ -91,12 +91,16 @@ class Build : NukeBuild
 
                     doc.Save($"{project.Path}");
                 }
+                else
+                {
+                    Log.Error("Can not load proj file!");
+                }
 
-                Log.Error("Can not load proj file!");
+            
             }
 
             Git("add -A ");
-            Git("commit 'OK'");
+            Git("commit \"OK\"");
             Git("push");
 
 

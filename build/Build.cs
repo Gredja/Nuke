@@ -99,7 +99,7 @@ class Build : NukeBuild
 
             Git("add -A ");
             Git("commit -m 'Ok'");
-           // Git("push");
+            Git("push");
         });
 
     Target Compile => _ => _

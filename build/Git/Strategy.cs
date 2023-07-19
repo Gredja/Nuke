@@ -7,7 +7,7 @@ namespace Git;
 
 public abstract class Strategy
 {
-    protected readonly Regex SemVerRegex = new(@"(\d+\.\d+\.\d+(?:\.\d)*)");
+    protected readonly Regex SemanticVersioningRegex = new(@"(\d+\.\d+\.\d+(?:\.\d)*)");
 
     protected readonly GitRepository Repository;
     protected readonly Tool Git;

@@ -17,14 +17,14 @@ public class ReleaseStrategy : Strategy, IStrategy
 
     public void Execute(Solution solution, string releaseVersion)
     {
-        string[] projectToModify = { "ConsoleApp1", "ClassLibrary1" };
-
-        var match = SemVerRegex.Match(releaseVersion);
+        var match = SemanticVersioningRegex.Match(releaseVersion);
 
         if (!match.Success)
         {
             throw new VersionNotFoundException(Repository.Branch);
         }
+
+        string[] projectToModify = { "ConsoleApp1", "ClassLibrary1" };
 
         Log.Information($"Create branch release/{releaseVersion} and checkout");
 
